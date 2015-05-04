@@ -5,7 +5,14 @@ __author__ = 'Caos'
 from scrapy import Spider, Item, Field
 
 class Post(Item):
-    title = Field()
+    userName = Field()
+    content = Field()
+    media = Field()
+    postTime = Field()
+    subUserName = Field()
+    subContent = Field()
+
+# 考虑是否分开定义不同的item，将数据分类保存起来。
 
 class Wespider(Spider):
     # def __init__(self, config):
