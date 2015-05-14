@@ -34,7 +34,7 @@ class Wespider(Spider):
     def parse(self, response):
         '''
 
-        '''
+
 
         self.log('A response from %s just arrived!' % response.url)
         print '---===-----====-----=====----====----====='
@@ -53,6 +53,22 @@ class Wespider(Spider):
         kw = {'body': body}
         r = r.replace(**kw)
         print r.body
+        '''
+        script_set = response.xpath('//script')
+        script = ''
+        for s in script_set:
+            try:
+                s_text = s.xpath('text()').extract()[0].encode('utf8').replace(r'\"', r'"').replace(r'\/', r'/')
+            except:
+                return response
+            if s_text.find('WB_feed_detail') > 0:
+                script = s_text
+                break
+        kw = {'body': script}
+        response = response.replace(**kw)
+
+
+
 
     def start_requests(self):
         for url in self.start_urls:
