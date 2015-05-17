@@ -32,9 +32,6 @@ class Wespider(Spider):
     cookies = None
 
     def parse(self, response):
-        '''
-
-
 
         self.log('A response from %s just arrived!' % response.url)
         print '---===-----====-----=====----====----====='
@@ -52,6 +49,8 @@ class Wespider(Spider):
                 body = body + html
         kw = {'body': body}
         r = r.replace(**kw)
+        print "============================================+=================="
+
         print r.body
         '''
         script_set = response.xpath('//script')
@@ -65,8 +64,10 @@ class Wespider(Spider):
                 script = s_text
                 break
         kw = {'body': script}
+        print "============================================+=================="
+        print script
         response = response.replace(**kw)
-
+        '''
 
 
 
