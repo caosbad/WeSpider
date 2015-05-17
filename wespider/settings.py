@@ -7,8 +7,8 @@ __author__ = 'Caos'
 # 测试专用
 settings = {
 
-    'userName': 'cs_caoshuai@sina.com',
-    'password': 'caoshuai521',
+    'userName': '',
+    'password': '',
     'urls': 'http://weibo.com',
     'cookie_file': 'weibo_login_cookies.dat',
     'imageFlag': 'False',
