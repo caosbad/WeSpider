@@ -18,7 +18,7 @@ except ImportError:
     print >> sys.stderr, "%s" % (sys.exc_info(), )
     sys.exit(1)
 
-from settings import settings
+from user_settings import settings
 
 def get_su(user_name):
     """
