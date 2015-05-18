@@ -8,10 +8,10 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'weSpider'
+BOT_NAME = 'weiboSpider'
 
-SPIDER_MODULES = ['spiders']
-NEWSPIDER_MODULE = 'spiders'
+SPIDER_MODULES = ['weiboSpider']
+NEWSPIDER_MODULE = 'weiboSpider'
 DOWNLOAD_DELAY = 2
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'weibo_spider (+http://www.yourdomain.com)'

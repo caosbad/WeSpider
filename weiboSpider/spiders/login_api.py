@@ -135,12 +135,13 @@ def do_login(user_name, passwd, cookie_file):
 
 def get_login_cookie(url):
 
-
     cookie_file = settings['cookie_file']
 
+
+
     if not os.path.exists(cookie_file):
-        user_name = settings.USER_NAME
-        passwd = settings.PASSWORD
+        user_name = settings['userName']
+        passwd = settings['password']
         do_login(user_name, passwd, cookie_file)
 
     try:
@@ -190,7 +191,6 @@ def test_with_mayun():
 
 
 if __name__ == '__main__':
-
 
     test_with_mayun()
     if login(settings['userName'], settings['password'], settings['cookie_file']):

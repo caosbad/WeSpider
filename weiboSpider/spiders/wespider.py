@@ -5,29 +5,20 @@ __author__ = 'Caos'
 from scrapy import Spider, Item, Field, Request, log
 from login_api import get_login_cookie
 from scrapy.contrib.spiders import CrawlSpider, Rule
+from weiboSpider.items import WeibospiderItem
 
 
 
-class WeiboItem(Item):
-    name = Field()
-    content = Field()
-    time = Field()
-    image = Field()
-    outLink = Field()
-    reName = Field()
-    reContent = Field()
-    reOutLink = Field()
-    reTime = Field()
-    reImage = Field()
+
 
 # 考虑是否分开定义不同的item，将数据分类保存起来。
 
-class Wespider(CrawlSpider):
+class Wespider(Spider):
     # def __init__(self, config):
     #     super(Wespider, self).__init__(self)
     #     self.config = config
 
-    name, start_urls = 'weSpider', ['http://www.weibo.com/u/1674242970']
+    name, start_urls = 'weSpider', ['http://www.weibo.com/woobaopei']
     # self.config.get('urls'
     cookies = None
 
@@ -46,27 +37,29 @@ class Wespider(CrawlSpider):
             if s_text.find('WB_feed_detail') > 0:
                 script = s_text
                 break
+        # 处理特殊字符并截取html
+        script = script.replace('\\n', '')
+        script = script.replace('\\t', '')
+        index = script.find('"html":"')
+        script = script[index+8: -3]
         kw = {'body': script}
-        response = response.replace(**kw)
+        # 替换微博内容至response
+        r = response.replace(**kw)
+        items = []
+        for i in range(1, 17):
+            item = WeibospiderItem()
+            # 微博内容的位置
+            node = r.xpath('/html/body/div/div[2]/div[%s]/div[1]/div[2]' % i)
 
-    def extract_weibo_response(self, response):     # 提取weibo内容,替换response
-        script_set = response.xpath('//script')
-        script = ''
-        for s in script_set:
-            try:
-                s_text = s.xpath('text()').extract()[0].encode('utf8').replace(r'\"', r'"').replace(r'\/', r'/')
-            except:
-                return response
-            if s_text.find('WB_feed_detail') > 0:
-                script = s_text
-                break
-        kw = {'body': script}
-        response = response.replace(**kw)
-        return response
+            contentDiv = node.xpath('div[1]/text()').extract()
+            aInContent = node.xpath('div[1]/a/text()').extract()
 
-    def _parse_response(self, response, callback, cb_kwargs, follow=True):  # 继承crawlspider这个方法,这个方法在解析页面/提取链接前调用
-            response = self.extract_weibo_response(response)
-            return super(Wespider, self)._parse_response(response, callback, cb_kwargs, follow)
+
+            item['content'] = ''
+            items.append(item)
+
+        return items
+
 
 
     def start_requests(self):
