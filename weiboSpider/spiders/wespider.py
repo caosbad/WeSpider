@@ -51,11 +51,44 @@ class Wespider(Spider):
             # 微博内容的位置
             node = r.xpath('/html/body/div/div[2]/div[%s]/div[1]/div[2]' % i)
 
+            # topWeibo = node.xpath('/div[1]/a[1]/@ignore').extract()
             contentDiv = node.xpath('div[1]/text()').extract()
-            aInContent = node.xpath('div[1]/a/text()').extract()
+            aInContent = node.xpath('div[1]/a')
+            linkInContent = node.xpath('/div[1]/a/@title').extract()
+            postTime = node.xpath('div[2]/a[1]/@title').extract()
+            subUser = node.xpath('div[2]/div[2]/div[1]/a[1]/text()').extract()
+            subContent = node.xpath('/div[2]/div[2]/div[2]/text()').extract()
+            subTime = node.xpath('div[2]/div[5]/div[2]/a[1]/@title').extract()
+
+            list = []
+            if len(aInContent) > 0 and len(contentDiv) >0 :
+                # list = map(lambda x, y: x + y.xpath('@title').extract()[0], contentDiv, aInContent)
+                for k in range(0, len(contentDiv)):
 
 
-            item['content'] = ''
+                    if k < (len(aInContent)):
+                        # print i , k
+                        # TODO @人名 和 链接 一同处理的逻辑
+                        link = aInContent[k].xpath('@title').extract()[0]
+                        if link == u'微博会员特权' :
+                            c = contentDiv[k].strip()
+                        else:
+                            c = contentDiv[k].strip() + link
+
+                    else:
+                        c = contentDiv[k].strip()
+
+                    list.append(c)
+
+
+
+
+
+            item['content'] = ''.join(list)
+            item['reTime'] = subTime
+            item['reName'] = subUser
+            item['time'] = postTime
+
             items.append(item)
 
         return items
