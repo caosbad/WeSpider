@@ -52,42 +52,61 @@ class Wespider(Spider):
             node = r.xpath('/html/body/div/div[2]/div[%s]/div[1]/div[2]' % i)
 
             # topWeibo = node.xpath('/div[1]/a[1]/@ignore').extract()
-            contentDiv = node.xpath('div[1]/text()').extract()
+            contentDiv = node.xpath('div[1]/text()').extract()[0]
             aInContent = node.xpath('div[1]/a')
-            linkInContent = node.xpath('/div[1]/a/@title').extract()
+            # linkInContent = node.xpath('/div[1]/a/@title').extract()[0]
             postTime = node.xpath('div[2]/a[1]/@title').extract()
             subUser = node.xpath('div[2]/div[2]/div[1]/a[1]/text()').extract()
-            subContent = node.xpath('/div[2]/div[2]/div[2]/text()').extract()
-            subTime = node.xpath('div[2]/div[5]/div[2]/a[1]/@title').extract()
+            subContent = node.xpath('div[2]/div[2]/div[2]/text()').extract()
+            # subTime = node.xpath('div[2]/div[2]/div[5]/div[2]/a[1]/@title').extract()
 
-            list = []
-            if len(aInContent) > 0 and len(contentDiv) >0 :
+            a = []
+            if isinstance(contentDiv, list) and len(contentDiv) >0 :
                 # list = map(lambda x, y: x + y.xpath('@title').extract()[0], contentDiv, aInContent)
                 for k in range(0, len(contentDiv)):
 
 
                     if k < (len(aInContent)):
                         # print i , k
-                        # TODO @人名 和 链接 一同处理的逻辑
-                        link = aInContent[k].xpath('@title').extract()[0]
-                        if link == u'微博会员特权' :
-                            c = contentDiv[k].strip()
+                        if len(aInContent[k].xpath('@title')) > 0:
+                            outLink = aInContent[k].xpath('@title').extract()[0].encode("utf-8")
+
+
+                        if outLink is not None:
+                            link = outLink
+                            #链接的处理方式
+                            link = '[链接]' + '(' + link + ')'
                         else:
-                            c = contentDiv[k].strip() + link
+                            link = aInContent[k].xpath('text()').extract()[0].encode("utf-8")
+                            # 按照markdown引用的方式处理
+                            link = '`' + link + '`'
+                        if link == u'微博会员特权' :
+                            c = contentDiv[k].strip().encode("utf-8")
+                        else:
+                            c = contentDiv[k].strip().encode("utf-8") + link
 
                     else:
-                        c = contentDiv[k].strip()
+                        c = contentDiv[k].strip().encode("utf-8")
 
-                    list.append(c)
+                    a.append(c)
+                item['content'] = ''.join(a)
+
+            else:
+
+                item['content'] = contentDiv
+
+
+            # 根据转发微博的时间来判断是否为转发的内容
+            if len(subUser) > 0:
+
+                # item['subTime'] = ''.join(subTime)
+                item['subUser'] = '*' + ''.join(subUser) + '*'
+                item['subContent'] = '>' + ''.join(subContent)
+            else:
+                item['postTime'] = ''.join(postTime)
 
 
 
-
-
-            item['content'] = ''.join(list)
-            item['reTime'] = subTime
-            item['reName'] = subUser
-            item['time'] = postTime
 
             items.append(item)
 
