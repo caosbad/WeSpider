@@ -22,3 +22,5 @@ class WeibospiderItem(scrapy.Item):
     subTime = scrapy.Field()
     reImage = scrapy.Field()
     pass
+
+

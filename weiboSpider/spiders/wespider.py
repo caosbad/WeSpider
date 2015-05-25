@@ -96,13 +96,14 @@ class Wespider(Spider):
                 item['content'] = contentDiv
 
 
-            # 根据转发微博的时间来判断是否为转发的内容
+            # 根据转发微博的子用户来判断是否为转发的内容
             if len(subUser) > 0:
 
                 # item['subTime'] = ''.join(subTime)
                 item['subUser'] = '*' + ''.join(subUser) + '*'
                 item['subContent'] = '>' + ''.join(subContent)
             else:
+
                 item['postTime'] = ''.join(postTime)
 
 

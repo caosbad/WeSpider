@@ -13,5 +13,8 @@ BOT_NAME = 'weiboSpider'
 SPIDER_MODULES = ['weiboSpider']
 NEWSPIDER_MODULE = 'weiboSpider'
 DOWNLOAD_DELAY = 2
+ITEM_PIPELINES = {
+    'weiboSpider.pipelines.toMarkdown.WeibospiderPipeline': 800,
+}
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'weibo_spider (+http://www.yourdomain.com)'
