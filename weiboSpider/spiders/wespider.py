@@ -18,7 +18,7 @@ class Wespider(Spider):
     #     super(Wespider, self).__init__(self)
     #     self.config = config
 
-    name, start_urls = 'weSpider', ['http://www.weibo.com/woobaopei']
+    name, start_urls = 'weSpider', ['http://weibo.com/woobaopei']
     # self.config.get('urls'
     cookies = None
 
