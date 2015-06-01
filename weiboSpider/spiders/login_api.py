@@ -129,7 +129,8 @@ def do_login(user_name, passwd, cookie_file):
             return 1
         else:
             return 0
-    except:
+    except Exception, e:
+        print e
         return 0
 
 
@@ -180,7 +181,7 @@ def login(user_name, passwd, cookie_file):
 
 
 def test_with_mayun():
-    test_url = 'http://weibo.com/mayun'
+    test_url = 'http://www.weibo.com/mayun'
     response = urllib2.urlopen(test_url).read()
     # print response
     p = re.compile(r'\$CONFIG\[\'uid\'\]')

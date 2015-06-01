@@ -6,6 +6,7 @@ from scrapy import Spider, Item, Field, Request, log
 from login_api import get_login_cookie
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from weiboSpider.items import WeibospiderItem
+import collections, re
 
 
 
@@ -18,7 +19,7 @@ class Wespider(Spider):
     #     super(Wespider, self).__init__(self)
     #     self.config = config
 
-    name, start_urls = 'weSpider', ['http://weibo.com/woobaopei']
+    name, start_urls = 'weSpider', ['http://www.weibo.com/imcaos']
     # self.config.get('urls'
     cookies = None
 
@@ -46,7 +47,20 @@ class Wespider(Spider):
         # 替换微博内容至response
         r = response.replace(**kw)
         items = []
-        for i in range(1, 17):
+
+        # 找到所有符合微博样式的微博条数，新浪加载的数量在12~16条不等。。。
+        # TODO： 添加翻页计数的功能
+
+        patt = re.compile("\w+\s\w+")
+        counter = collections.Counter(patt.findall(script))
+        # 每天微博的样式定义
+        contentFlag = 'WB_text W_f14'
+
+        counter_dict = dict(counter)
+
+        weiboNum = counter_dict.get(contentFlag, 0)
+
+        for i in range(1, weiboNum):
             item = WeibospiderItem()
             # 微博内容的位置
             node = r.xpath('/html/body/div/div[2]/div[%s]/div[1]/div[2]' % i)
