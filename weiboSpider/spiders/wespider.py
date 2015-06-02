@@ -9,6 +9,7 @@ from weiboSpider.items import WeibospiderItem
 import collections, re
 
 
+import ConfigParser
 
 
 
@@ -18,14 +19,43 @@ class Wespider(Spider):
     # def __init__(self, config):
     #     super(Wespider, self).__init__(self)
     #     self.config = config
+    # 获取配置中的
 
-    name, start_urls = 'weSpider', ['http://www.weibo.com/imcaos']
+    config = ConfigParser.ConfigParser()
+    with open('../../bin/weSpider.cfg', 'rw') as cfgfile:
+        config.readfp(cfgfile)
+        num = int(config.get('config', 'num'))
+        urls = config.get('config', 'urls')[1: -1].split(',')
+        image = config.get('config', 'image')
+
+
+    pageNum = num / 45
+
+    pageUrls = []
+
+    if pageNum > 1 :
+
+        for i in range(1, pageNum):
+            for url in urls:
+                pageUrls.append(url)
+                pageUrls.append()
+
+
+    else:
+        pass
+
+
+
+    name, start_urls = 'weSpider', urls
     # self.config.get('urls'
     cookies = None
 
     # def process_request(self, request):
     #     request = request.replace(**{'cookies': self.cookies})
     #     return request
+
+
+
 
     def parse(self, response):
         script_set = response.xpath('//script')
