@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+import urllib2
 
 __author__ = 'Caos'
 
 from scrapy import Spider, Item, Field, Request, log
-from login_api import get_login_cookie
+from login_api import get_login_cookie, login
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from weiboSpider.items import WeibospiderItem
 import collections, re
 
+from user_settings import settings
 
 import ConfigParser
 
@@ -33,12 +35,26 @@ class Wespider(Spider):
 
     pageUrls = []
 
-    if pageNum > 1 :
+    if pageNum >= 1:
 
-        for i in range(1, pageNum):
+        for i in range(1, pageNum+1):
             for url in urls:
-                pageUrls.append(url)
-                pageUrls.append()
+
+                # cookies = get_login_cookie(url)
+                login(settings['userName'], settings['password'], settings['cookie_file'])
+                respoonse = urllib2.urlopen(url).read()
+                index = respoonse.find("$CONFIG['page_id']")
+                if index > 0:
+
+                    pageId = respoonse[index+20: index+36]
+                    pageUrls.append(url)
+                    url2 = 'http://weibo.com/p/aj/v6/mblog/mbloglist?domain=100505&page=%s&pre_page=1&id=%s' % (i, pageId)
+                    url3 = 'http://weibo.com/p/aj/v6/mblog/mbloglist?domain=100505&page=%s&pre_page=1&pagebar=1&id=%s' % (i, pageId)
+                    pageUrls.append(url2)
+                    pageUrls.append(url3)
+                else:
+                    pageUrls.append(url)
+
 
 
     else:
@@ -46,15 +62,13 @@ class Wespider(Spider):
 
 
 
-    name, start_urls = 'weSpider', urls
+    name, start_urls = 'weSpider', pageUrls
     # self.config.get('urls'
     cookies = None
 
     # def process_request(self, request):
     #     request = request.replace(**{'cookies': self.cookies})
     #     return request
-
-
 
 
     def parse(self, response):
@@ -154,11 +168,6 @@ class Wespider(Spider):
 
             else:
                 item['subContent'] = ''
-
-
-
-
-
 
 
             items.append(item)
