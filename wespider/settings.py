@@ -16,6 +16,8 @@ settings = {
 
 }
 
+
+
 class Config(dict):
 
     def __init__(self, names=(), values=(), **kw):
@@ -34,4 +36,7 @@ class Config(dict):
 
     def __setattr__(self, key, value):
         self[key] = value
+        
+    def test_function():
+        pass:
 
